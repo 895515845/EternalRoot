@@ -11,5 +11,7 @@
 - 隐藏网络连接
 - 隐藏进程
 - 隐藏文件列表
+- 挂载隐藏进程网络
+
 
 基于https://github.com/S-ixpence/Pkeep 修改
